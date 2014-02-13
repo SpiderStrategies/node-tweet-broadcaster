@@ -1,0 +1,27 @@
+{
+  "name": "tweet-broadcaster",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "tweet-broadcaster": "./bin/tweet-broadcaster.js"
+  },
+  "keywords": ["twitter", "tweet", "socket.io", "tweet-broadcaster"],
+  "scripts": {
+    "test": "node_modules/.bin/mocha -R spec test"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dnode": "~1.2.0",
+    "redis-scripto": "~0.1.2",
+    "redis": "~0.10.0",
+    "node-tweet-stream": "~1.0.1",
+    "twitter-search-terms": "~1.0.0",
+    "yargs": "~1.0.15"
+  },
+  "devDependencies": {
+    "mocha": "~1.17.1",
+    "socket.io": "~0.9.16"
+  }
+}
