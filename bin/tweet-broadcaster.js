@@ -7,6 +7,11 @@ var Server = require('../')
               .alias('s', 'consumer_secret')
               .alias('t', 'token')
               .alias('a', 'token_secret')
+              .options('f', {
+                alias: 'frequency',
+                describe: 'frequency to update the twitter stream',
+                default: 1000 * 60
+              })
               .options('l', {
                 alias: 'listen',
                 describe: 'port to listen for dnode clients',
@@ -38,4 +43,4 @@ var server = new Server(redis, {
   consumer_secret: args.s,
   token: args.t,
   token_secret: args.a
-}).listen(args.l)
+}).listen(args.l, args.f)
