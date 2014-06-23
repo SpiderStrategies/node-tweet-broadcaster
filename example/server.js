@@ -1,19 +1,22 @@
 var http = require('http')
   , redis  = require('redis')
-  , socketio = require('socket.io')
-  , RedisStore = socketio.RedisStore
+  , io = require('socket.io')
   , dnode = require('dnode')
   , fs = require('fs')
+  , adapter = require('socket.io-redis')
 
 var server = http.createServer(function (req, res) {
   return fs.createReadStream(__dirname + '/index.html').pipe(res)
 }).listen(8080)
 
-var io = socketio.listen(server)
+var io = io(server)
 
-io.set('store', new RedisStore({ redisPub: redis.createClient(), redisSub: redis.createClient(), redisClient: redis.createClient() }))
+io.adapter(adapter({
+  pubClient: redis.createClient(null, null, { detect_buffers: true }),
+  subClient: redis.createClient(null, null, { detect_buffers: true })
+}))
 
-io.sockets.on('connection', function (socket) {
+io.on('connection', function (socket) {
 
   socket.on('tweet:track', function (term) {
     var d = dnode.connect(7001, function (remote) {
@@ -37,7 +40,7 @@ io.sockets.on('connection', function (socket) {
   })
 
   socket.on('disconnect', function () {
-    var rooms = Object.keys(io.sockets.manager.roomClients[socket.id])
+    var rooms = socket.rooms
 
     var d = dnode.connect(7001, function (remote) {
       rooms.forEach(function (room) {
