@@ -14,7 +14,7 @@ var Server = require('../')
               })
               .options('l', {
                 alias: 'listen',
-                describe: 'port to listen for dnode clients',
+                describe: 'http port to listen for clients',
                 default: 7001
               })
               .options('p', {

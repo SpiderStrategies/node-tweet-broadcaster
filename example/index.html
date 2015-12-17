@@ -86,6 +86,7 @@
           socket.emit('tweet:track', keyword)
 
           socket.on('tweet:' + keyword, function (data) {
+            console.log('received a tweet')
             block.find('ul').prepend($('<li>').text(data.text))
           })
         })

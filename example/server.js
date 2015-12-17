@@ -1,7 +1,7 @@
 var http = require('http')
   , redis  = require('redis')
   , io = require('socket.io')
-  , dnode = require('dnode')
+  , request = require('request')
   , fs = require('fs')
   , adapter = require('socket.io-redis')
 
@@ -19,36 +19,28 @@ io.adapter(adapter({
 io.on('connection', function (socket) {
 
   socket.on('tweet:track', function (term) {
-    var d = dnode.connect(7001, function (remote) {
-      socket.join(term)
-      remote.track(term)
-      d.end()
-    })
-
-    d.on('error', function (err) {
-      // Server is probably down
-      console.log(err)
+    socket.join(term)
+    request('http://localhost:7001/track?keyword=' + term, function (err, resp, body) {
+      console.log(body)
     })
   })
 
   socket.on('tweet:untrack', function (term) {
-    var d = dnode.connect(7001, function (remote) {
-      socket.leave(term)
-      remote.untrack(term)
-      d.end()
+    socket.leave(term)
+    request('http://localhost:7001/untrack?keyword=' + term, function (err, resp, body) {
+      console.log(body)
     })
   })
 
   socket.on('disconnect', function () {
     var rooms = socket.rooms
 
-    var d = dnode.connect(7001, function (remote) {
-      rooms.forEach(function (room) {
-        if (room[0] === '/') {
-          remote.untrack(room.substring(1))
-        }
-      })
-      d.end()
+    rooms.forEach(function (room) {
+      if (room[0] === '/') {
+        request('http://localhost:7001/untrack?keyword=' + room.substring(1), function (err, resp, body) {
+          console.log(body)
+        })
+      }
     })
   })
 })
