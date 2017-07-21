@@ -34,8 +34,7 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', function () {
     var rooms = socket.rooms
-
-    rooms.forEach(function (room) {
+    Object.keys(rooms).forEach(function (room) {
       if (room[0] === '/') {
         request('http://localhost:7001/untrack?keyword=' + room.substring(1), function (err, resp, body) {
           console.log(body)
